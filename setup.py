@@ -8,6 +8,7 @@ setup(
     url="https://github.com/rhoban/doxystub",
     version="0.0.1",
     long_description=open("README.md").read(),
+    long_description_content_type='text/markdown',
     license="MIT",
     entry_points={'console_scripts': 'doxystub = doxystub.doxystub:main'},
     packages=['doxystub']
