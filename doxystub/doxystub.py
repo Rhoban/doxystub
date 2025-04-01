@@ -102,7 +102,7 @@ class DoxyStubs:
         self.module = eval(f"{self.module_name}")
 
         # Running & parsing Doxygen
-        # self.run_doxygen()
+        self.run_doxygen()
         self.doxygen.parse_directory(self.doxygen_directory)
 
         # Headers and forward types declaration
