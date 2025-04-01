@@ -9,6 +9,7 @@ This package generates stubs (`.pyi` file) for a python module created with Boos
 To function, *doxystub* needs to know the mapping between C++ and Python classes. To that end, you should wrap your calls to `class_` as follow:
 
 ```c
+// doxystub.h
 #pragma once
 
 #include <boost/python.hpp>
@@ -48,11 +49,9 @@ doxystub -m my_module -d path/to/doxygen -o my_module.pyi
 The following snippet can be used to trigger stubs generation at the end of your build
 
 ```cmake
-find_package(Python REQUIRED COMPONENTS Interpreter)
-
 add_custom_command(
     TARGET my_module POST_BUILD
-    COMMAND  "${Python_EXECUTABLE}" doxystub
+    COMMAND doxystub
         --module my_module
         --doxygen_directory "${CMAKE_CURRENT_SOURCE_DIR}"
         --output "${CMAKE_BINARY_DIR}/${PYTHON_SITELIB}/my_module.pyi"
