@@ -235,7 +235,9 @@ class DoxyStubs:
         """
         signature = MethodSignature(name)
 
-        doc = doc.replace("[", "").replace("]", "").strip()
+        lines = doc.strip().split("\n")
+        lines[0] = lines[0].replace("[", "").replace("]", "")
+        doc = "\n".join(lines)
 
         result = re.match(
             r"^([^\n]*?)\(([^\n]+)\) -> ([^\n]+) :(.*?)C\+\+ signature",
@@ -247,6 +249,11 @@ class DoxyStubs:
             signature.name = result.group(1)
             signature.return_type = result.group(3)
             signature.doc = result.group(4).strip()
+
+            # Allowing type override
+            doc, type = self.override_doc_and_type(signature.doc)
+            if type is not None:
+                signature.return_type = type
 
             args = result.group(2).split(",")
             for arg in args:
