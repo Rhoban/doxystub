@@ -219,7 +219,7 @@ class DoxyStubs:
                             )
                         else:
                             # Class variable
-                            self.process_class_variable(class_name, _name)
+                            self.process_class_variable(class_name, _name, _object.__doc__)
                 self.stubs += "\n"
             elif callable(object):
                 # Object is a function
@@ -297,6 +297,16 @@ class DoxyStubs:
             signature.doc += f"\n:return: {function.returns_description}"
 
         return signature
+    
+    def override_doc_and_type(self, doc:str):
+        if doc:
+            result = re.match(r"^(.*)\[(.+?)\]$", doc)
+            if result:
+                return doc, result.group(2)
+            else:
+                return doc, None
+        
+        return None, None
 
     def process_class_method(self, class_name: str, method_name: str, doc: str):
         function = None
@@ -313,6 +323,13 @@ class DoxyStubs:
 
         if function is not None:
             signature = self.build_signature_from_doxygen(function)
+
+            # Overrides the doc and type if set manually
+            new_doc, new_type = self.override_doc_and_type(self.parse_boost_python_docstring(method_name, doc).doc)
+            if new_doc is not None:
+                signature.doc = new_doc
+            if new_type is not None:
+                signature.return_type = new_type
         else:
             signature = self.parse_boost_python_docstring(method_name, doc)
 
@@ -323,12 +340,19 @@ class DoxyStubs:
 
         if function is not None:
             signature = self.build_signature_from_doxygen(function)
+            
+            # Overrides the doc and type if set manually
+            new_doc, new_type = self.override_doc_and_type(self.parse_boost_python_docstring(function_name, doc).doc)
+            if new_doc is not None:
+                signature.doc = new_doc
+            if new_type is not None:
+                signature.return_type = new_type
         else:
             signature = self.parse_boost_python_docstring(function_name, doc)
 
         self.stubs += signature.generate()
 
-    def process_class_variable(self, class_name: str, member_name: str):
+    def process_class_variable(self, class_name: str, member_name: str, doc: str):
         variable = None
         if class_name in self.python_to_cxx:
             variable = self.doxygen.get_class_variable(
@@ -336,14 +360,28 @@ class DoxyStubs:
             )
 
         if variable is not None:
-            py_type = self.cxx_type_to_py(variable.type)
+            doc, type = self.override_doc_and_type(doc)
+            if doc is None:
+                doc = variable.brief
+
+            if type:
+                py_type = type
+            else:
+                py_type = self.cxx_type_to_py(variable.type)
             self.stubs += f"  {member_name}: {py_type} # {variable.type}\n"
-            if variable.brief:
+            if doc:
                 self.stubs += f'  """' + "\n"
-                self.stubs += f"  {variable.brief.strip()}\n"
+                self.stubs += f"  {doc.strip()}\n"
                 self.stubs += f'  """' + "\n"
         else:
-            self.stubs += f"  {member_name}: any\n"
+            doc, type = self.override_doc_and_type(doc)
+            if type is None:
+                type = "any"
+            self.stubs += f"  {member_name}: {type}\n"
+            if doc is not None:
+                self.stubs += f'  """' + "\n"
+                self.stubs += f"  {doc}\n"
+                self.stubs += f'  """' + "\n"
 
         self.stubs += "\n"
 
