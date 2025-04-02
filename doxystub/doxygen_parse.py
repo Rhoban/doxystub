@@ -285,9 +285,9 @@ class Doxygen:
         return None
 
     def get_class_variable(
-        self, class_name: str, function_name: str
+        self, class_name: str, variable_name: str
     ) -> DoxygenVariable | None:
-        member = self.get_class_member(class_name, function_name)
+        member = self.get_class_member(class_name, variable_name)
 
         if isinstance(member, DoxygenVariable):
             return member

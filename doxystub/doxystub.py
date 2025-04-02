@@ -14,6 +14,8 @@ cxx_to_python_overrides: dict = {
     "int": "int",
     "bool": "bool",
     "void": "None",
+    "uint*_t": "int",
+    "int*_t": "int",
     "Eigen::Matrix*": "numpy.ndarray",
     "Eigen::Vector*": "numpy.ndarray",
     "Eigen::Affine*": "numpy.ndarray",
@@ -329,7 +331,7 @@ class DoxyStubs:
                 )
 
         signature = self.parse_boost_python_docstring(method_name, doc)
-        if function is not None and signature.doc == "":
+        if function is not None and not signature.doc:
             signature = self.build_signature_from_doxygen(function)
 
         self.stubs += signature.generate("  ")
@@ -338,7 +340,7 @@ class DoxyStubs:
         function = self.doxygen.get_function(function_name)
 
         signature = self.parse_boost_python_docstring(function_name, doc)
-        if function is not None and signature.doc == "":
+        if function is not None and not signature.doc:
             signature = self.build_signature_from_doxygen(function)
 
         self.stubs += signature.generate()
@@ -352,7 +354,7 @@ class DoxyStubs:
 
         doc, type = self.override_doc_and_type(doc)
 
-        if variable is not None and doc == "":
+        if variable is not None and not doc:
             py_type = self.cxx_type_to_py(variable.type)
             self.stubs += f"  {member_name}: {py_type} # {variable.type}\n"
             if variable.brief:
