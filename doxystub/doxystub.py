@@ -328,34 +328,18 @@ class DoxyStubs:
                     self.python_to_cxx[class_name], method_name
                 )
 
-        if function is not None:
+        signature = self.parse_boost_python_docstring(method_name, doc)
+        if function is not None and signature.doc == "":
             signature = self.build_signature_from_doxygen(function)
-
-            # Overrides the doc and type if set manually
-            new_doc, new_type = self.override_doc_and_type(self.parse_boost_python_docstring(method_name, doc).doc)
-            if new_doc is not None:
-                signature.doc = new_doc
-            if new_type is not None:
-                signature.return_type = new_type
-        else:
-            signature = self.parse_boost_python_docstring(method_name, doc)
 
         self.stubs += signature.generate("  ")
 
     def process_method(self, function_name: str, doc: str):
         function = self.doxygen.get_function(function_name)
 
-        if function is not None:
+        signature = self.parse_boost_python_docstring(function_name, doc)
+        if function is not None and signature.doc == "":
             signature = self.build_signature_from_doxygen(function)
-            
-            # Overrides the doc and type if set manually
-            new_doc, new_type = self.override_doc_and_type(self.parse_boost_python_docstring(function_name, doc).doc)
-            if new_doc is not None:
-                signature.doc = new_doc
-            if new_type is not None:
-                signature.return_type = new_type
-        else:
-            signature = self.parse_boost_python_docstring(function_name, doc)
 
         self.stubs += signature.generate()
 
@@ -366,22 +350,16 @@ class DoxyStubs:
                 self.python_to_cxx[class_name], member_name
             )
 
-        if variable is not None:
-            doc, type = self.override_doc_and_type(doc)
-            if doc is None:
-                doc = variable.brief
+        doc, type = self.override_doc_and_type(doc)
 
-            if type:
-                py_type = type
-            else:
-                py_type = self.cxx_type_to_py(variable.type)
+        if variable is not None and doc == "":
+            py_type = self.cxx_type_to_py(variable.type)
             self.stubs += f"  {member_name}: {py_type} # {variable.type}\n"
-            if doc:
+            if variable.brief:
                 self.stubs += f'  """' + "\n"
-                self.stubs += f"  {doc.strip()}\n"
+                self.stubs += f"  {variable.brief.strip()}\n"
                 self.stubs += f'  """' + "\n"
         else:
-            doc, type = self.override_doc_and_type(doc)
             if type is None:
                 type = "any"
             self.stubs += f"  {member_name}: {type}\n"
