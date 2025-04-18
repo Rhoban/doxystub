@@ -325,6 +325,7 @@ class DoxyStubs:
                 function = self.doxygen.get_class_function(
                     self.python_to_cxx[class_name], class_name
                 )
+                function.name = "__init__"
             else:
                 function = self.doxygen.get_class_function(
                     self.python_to_cxx[class_name], method_name
