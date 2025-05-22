@@ -182,7 +182,7 @@ class DoxyStubs:
             sys.stderr.write("-----------------------\n\n")
             exit(1)
 
-        print("Running Doxygen...")
+        print(f"Running Doxygen in {self.doxygen_directory}...")
         os.system(f"cd {self.doxygen_directory} && doxygen 1>/dev/null")
 
     def process_module_members(self):
