@@ -3,6 +3,7 @@ import re
 import inspect
 import sys
 import os
+import shutil
 import argparse
 import fnmatch
 from .doxygen_parse import Doxygen, DoxygenFunction
@@ -175,10 +176,10 @@ class DoxyStubs:
         """
         Ensure Doxygen is run
         """
-        if not os.path.exists(f"/usr/bin/doxygen"):
+        if shutil.which("doxygen") is None:
             sys.stderr.write("\n-----------------------\n")
             sys.stderr.write("WARNING: Doxygen is not installed\n")
-            sys.stderr.write("         you should run: sudo apt install doxygen\n")
+            sys.stderr.write("         (e.g.: sudo apt install doxygen)\n")
             sys.stderr.write("-----------------------\n\n")
             exit(1)
 
