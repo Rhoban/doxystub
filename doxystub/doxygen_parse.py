@@ -11,8 +11,7 @@ def element_to_string(element: ET.Element) -> str:
     s = element.text or ""
     for sub_element in element:
         s += ET.tostring(sub_element).decode("utf-8")
-    if element.tail is not None:
-        s += element.tail
+    s += element.tail or ""
     return re.sub("<[^<]+?>", "", s)
 
 
