@@ -2,6 +2,7 @@
 from __future__ import annotations
 import re
 import inspect
+import importlib
 import sys
 import os
 import shutil
@@ -102,8 +103,7 @@ class DoxyStubs:
 
     def process(self):
         # Load the module to stub
-        exec(f"import {self.module_name}")
-        self.module = eval(f"{self.module_name}")
+        self.module = importlib.import_module(self.module_name)
 
         # Running & parsing Doxygen
         self.run_doxygen()
