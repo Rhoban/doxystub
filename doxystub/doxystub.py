@@ -37,6 +37,10 @@ class MethodArgument:
         default_value: str | None = None,
         comment: str | None = None,
     ):
+        # Avoding using reserved keywords as argument names
+        if name == 'lambda':
+            name = "lambda_"
+
         self.name: str = name
         self.type: str = type
         self.default_value: str | None = default_value
