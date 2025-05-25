@@ -6,7 +6,7 @@ setup(
     maintainer_email="g.passault@gmail.com",
     description="Stubs generator based on Doxygen+Boost.Python",
     url="https://github.com/rhoban/doxystub",
-    version="0.1.3",
+    version="0.1.4",
     long_description=open("README.md").read(),
     long_description_content_type='text/markdown',
     license="MIT",
