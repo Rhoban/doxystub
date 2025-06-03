@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doxystub"
-version = "0.1.5"
+version = "0.1.6"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "Grégoire Passault", email = "g.passault@gmail.com" }]
@@ -15,4 +15,4 @@ Homepage = "https://github.com/rhoban/doxystub/"
 Repository = "https://github.com/rhoban/doxystub/"
 
 [project.scripts]
-doxystub = "docystub.doxystub:main"
+doxystub = "doxystub.doxystub:main"
