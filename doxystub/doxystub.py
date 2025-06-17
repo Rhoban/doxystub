@@ -315,7 +315,8 @@ class DoxyStubs:
         return signature
     
     def override_doc_and_type(self, doc:str):
-        if doc:
+        # Not considering Boost python signatures
+        if doc and 'C++ signature :' not in doc:
             result = re.match(r"^(.*)\[(.+?)\]$", doc)
             if result:
                 return doc, result.group(2)
