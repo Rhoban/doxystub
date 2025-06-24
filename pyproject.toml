@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools >= 77.0.3"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "doxystub"
-version = "0.1.8"
+version = "0.1.9"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [{ name = "Grégoire Passault", email = "g.passault@gmail.com" }]
